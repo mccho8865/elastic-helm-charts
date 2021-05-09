@@ -15,8 +15,8 @@ roles:
   remote_cluster_client: "true"
   ml: "true"
 
-replicas: 3
-minimumMasterNodes: 2
+replicas: 10
+minimumMasterNodes: 5
 
 esMajorVersion: ""
 
@@ -58,8 +58,8 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "docker.elastic.co/elasticsearch/elasticsearch"
-imageTag: "8.0.0-SNAPSHOT"
+image: "elasticsearch"
+imageTag: "7.12.1"
 imagePullPolicy: "IfNotPresent"
 
 podAnnotations: {}
@@ -72,11 +72,11 @@ esJavaOpts: "" # example: "-Xmx1g -Xms1g"
 
 resources:
   requests:
-    cpu: "1000m"
-    memory: "2Gi"
+    cpu: "2"
+    memory: "4Gi"
   limits:
-    cpu: "1000m"
-    memory: "2Gi"
+    cpu: "4"
+    memory: "8Gi"
 
 initResources: {}
   # limits:
@@ -162,7 +162,7 @@ antiAffinityTopologyKey: "kubernetes.io/hostname"
 
 # Hard means that by default pods will only be scheduled if there are enough nodes for them
 # and that they will never end up on the same node. Setting this to soft will do this "best effort"
-antiAffinity: "hard"
+antiAffinity: "soft"
 
 # This is the node affinity settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
