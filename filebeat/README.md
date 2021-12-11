@@ -1,6 +1,6 @@
 # Filebeat Helm Chart
 
-[![Build Status](https://img.shields.io/jenkins/s/https/devops-ci.elastic.co/job/elastic+helm-charts+master.svg)](https://devops-ci.elastic.co/job/elastic+helm-charts+master/) [![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/elastic)](https://artifacthub.io/packages/search?repo=elastic)
+[![Build Status](https://img.shields.io/jenkins/s/https/devops-ci.elastic.co/job/elastic+helm-charts+main.svg)](https://devops-ci.elastic.co/job/elastic+helm-charts+main/) [![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/elastic)](https://artifacthub.io/packages/search?repo=elastic)
 
 This Helm chart is a lightweight way to configure and run our official
 [Filebeat Docker image][].
@@ -15,7 +15,7 @@ This Helm chart is a lightweight way to configure and run our official
 - [Requirements](#requirements)
 - [Installing](#installing)
   - [Install released version using Helm repository](#install-released-version-using-helm-repository)
-  - [Install development version using master branch](#install-development-version-using-master-branch)
+  - [Install development version using main branch](#install-development-version-using-main-branch)
 - [Upgrading](#upgrading)
 - [Usage notes](#usage-notes)
 - [Configuration](#configuration)
@@ -53,7 +53,7 @@ See [supported configurations][] for more details.
   - with Helm 2 (deprecated): `helm install --name filebeat elastic/filebeat`
 
 
-### Install development version using master branch
+### Install development version using main branch
 
 * Clone the git repo: `git clone git@github.com:elastic/helm-charts.git`
 
@@ -73,9 +73,11 @@ upgrading to a new chart version.
 * The default Filebeat configuration file for this chart is configured to use an
 Elasticsearch endpoint. Without any additional changes, Filebeat will send
 documents to the service URL that the Elasticsearch Helm chart sets up by
-default. You may either set the `ELASTICSEARCH_HOSTS` environment variable in
-`extraEnvs` to override this endpoint or modify the default `filebeatConfig` to
-change this behavior.
+default. The Elasticsearch credentials are also retrieved from
+`elasticsearch-master-credentials` Secret from Elasticsearch chart by default.
+You may either set the `ELASTICSEARCH_HOSTS`, `ELASTICSEARCH_USER` and
+`ELASTICSEARCH_PASSWORD` environment variables in `extraEnvs` to override this
+or modify the default `filebeatConfig` to change this behavior.
 * The default Filebeat configuration file is also configured to capture
 container logs and enrich them with Kubernetes metadata by default. This will
 capture all container logs in the cluster.
@@ -100,7 +102,7 @@ as a reference. They are also used in the automated testing of this chart.
 | `daemonset.affinity`           | Configurable [affinity][] for filebeat daemonset                                                                                                                             | `{}`                               |
 | `daemonset.enabled`            | If true, enable daemonset                                                                                                                                                    | `true`                             |
 | `daemonset.envFrom`            | Templatable string of `envFrom` to be passed to the  [environment from variables][] which will be appended to filebeat container for DaemonSet                               | `[]`                               |
-| `daemonset.extraEnvs`          | Extra [environment variables][] which will be appended to filebeat container for DaemonSet                                                                                   | `[]`                               |
+| `daemonset.extraEnvs`          | Extra [environment variables][] which will be appended to filebeat container for DaemonSet                                                                                   | see [values.yaml][]                |
 | `daemonset.extraVolumeMounts`  | Templatable string of additional `volumeMounts` to be passed to the `tpl` function for DaemonSet                                                                             | `[]`                               |
 | `daemonset.extraVolumes`       | Templatable string of additional `volumes` to be passed to the `tpl` function for DaemonSet                                                                                  | `[]`                               |
 | `daemonset.hostAliases`        | Configurable [hostAliases][] for filebeat DaemonSet                                                                                                                          | `[]`                               |
@@ -117,7 +119,7 @@ as a reference. They are also used in the automated testing of this chart.
 | `deployment.affinity`          | Configurable [affinity][] for filebeat Deployment                                                                                                                            | `{}`                               |
 | `deployment.enabled`           | If true, enable deployment                                                                                                                                                   | `false`                            |
 | `deployment.envFrom`           | Templatable string of `envFrom` to be passed to the  [environment from variables][] which will be appended to filebeat container for Deployment                              | `[]`                               |
-| `deployment.extraEnvs`         | Extra [environment variables][] which will be appended to filebeat container for Deployment                                                                                  | `[]`                               |
+| `deployment.extraEnvs`         | Extra [environment variables][] which will be appended to filebeat container for Deployment                                                                                  | see [values.yaml][]                |
 | `deployment.extraVolumeMounts` | Templatable string of additional `volumeMounts` to be passed to the `tpl` function for DaemonSet                                                                             | `[]`                               |
 | `deployment.extraVolumes`      | Templatable string of additional `volumes` to be passed to the `tpl` function for Deployment                                                                                 | `[]`                               |
 | `daemonset.hostAliases`        | Configurable [hostAliases][] for filebeat Deployment                                                                                                                         | `[]`                               |
@@ -234,19 +236,19 @@ about our development and testing process.
 
 [7.x]: https://github.com/elastic/helm-charts/releases
 [7.9.2]: https://github.com/elastic/helm-charts/blob/7.9.2/filebeat/README.md
-[BREAKING_CHANGES.md]: https://github.com/elastic/helm-charts/blob/master/BREAKING_CHANGES.md
-[CHANGELOG.md]: https://github.com/elastic/helm-charts/blob/master/CHANGELOG.md
-[CONTRIBUTING.md]: https://github.com/elastic/helm-charts/blob/master/CONTRIBUTING.md
+[BREAKING_CHANGES.md]: https://github.com/elastic/helm-charts/blob/main/BREAKING_CHANGES.md
+[CHANGELOG.md]: https://github.com/elastic/helm-charts/blob/main/CHANGELOG.md
+[CONTRIBUTING.md]: https://github.com/elastic/helm-charts/blob/main/CONTRIBUTING.md
 [affinity]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 [annotations]: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 [cluster role rules]: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole
-[default Elasticsearch Helm chart]: https://github.com/elastic/helm-charts/tree/master/elasticsearch/README.md#default
+[default Elasticsearch Helm chart]: https://github.com/elastic/helm-charts/tree/main/elasticsearch/README.md#default
 [dnsConfig]: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 [environment variables]: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/#using-environment-variables-inside-of-your-config
 [environment from variables]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
-[examples]: https://github.com/elastic/helm-charts/tree/master/filebeat/examples
-[examples/oss]: https://github.com/elastic/helm-charts/tree/master/filebeat/examples/oss
-[examples/security]: https://github.com/elastic/helm-charts/tree/master/filebeat/examples/security
+[examples]: https://github.com/elastic/helm-charts/tree/main/filebeat/examples
+[examples/oss]: https://github.com/elastic/helm-charts/tree/main/filebeat/examples/oss
+[examples/security]: https://github.com/elastic/helm-charts/tree/main/filebeat/examples/security
 [filebeat docker image]: https://www.elastic.co/guide/en/beats/filebeat/current/running-on-docker.html
 [filebeat oss docker image]: https://www.docker.elastic.co/r/beats/filebeat-oss
 [filebeat outputs]: https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html
@@ -265,8 +267,8 @@ about our development and testing process.
 [priorityClass]: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
 [probe]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 [resources]: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
-[supported configurations]: https://github.com/elastic/helm-charts/tree/master/README.md#supported-configurations
+[supported configurations]: https://github.com/elastic/helm-charts/tree/main/README.md#supported-configurations
 [serviceAccount]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 [tolerations]: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 [updateStrategy]: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/#daemonset-update-strategy
-[values.yaml]: https://github.com/elastic/helm-charts/tree/master/filebeat/values.yaml
+[values.yaml]: https://github.com/elastic/helm-charts/tree/main/filebeat/values.yaml

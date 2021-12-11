@@ -86,7 +86,7 @@ helm3 2to3 convert <release-name>
 # Upgrade to 7.10.0
 helm upgrade <release-name> elastic/<chart-name> --version 7.10.0
 
-# Cleanup Helm 2 datas
+# Cleanup Helm 2 data
 helm3 2to3 cleanup
 ```
 
@@ -417,12 +417,12 @@ volumeClaimTemplate:
 [container input]: https://www.elastic.co/guide/en/beats/filebeat/7.7/filebeat-input-container.html
 [docker input]: https://www.elastic.co/guide/en/beats/filebeat/7.7/filebeat-input-docker.html
 [elastic blog post]: https://www.elastic.co/blog/licensing-change
-[elastic elasticsearch chart]: https://github.com/elastic/helm-charts/tree/master/elasticsearch
+[elastic elasticsearch chart]: https://github.com/elastic/helm-charts/tree/main/elasticsearch
 [elastic helm repo]: https://helm.elastic.co
 [github releases]: https://github.com/elastic/helm-charts/releases
 [helm 2to3]: https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/
-[migration guide]: https://github.com/elastic/helm-charts/blob/master/elasticsearch/examples/migration/README.md
-[new branching model]: https://github.com/elastic/helm-charts/blob/master/CONTRIBUTING.md#branching
+[migration guide]: https://github.com/elastic/helm-charts/blob/main/elasticsearch/examples/migration/README.md
+[new branching model]: https://github.com/elastic/helm-charts/blob/main/CONTRIBUTING.md#branching
 [kube-state-metrics]: https://github.com/helm/charts/tree/master/stable/kube-state-metrics
 [stable elasticsearch chart]: https://github.com/helm/charts/tree/master/stable/elasticsearch
 [stable elasticsearch chart notice]: https://github.com/helm/charts/tree/master/stable#elasticsearch#this-helm-chart-is-deprecated
