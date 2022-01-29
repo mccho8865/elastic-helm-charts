@@ -92,13 +92,13 @@ daemonset:
   securityContext:
     runAsUser: 0
     privileged: false
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "100Mi"
-    limits:
-      cpu: "1000m"
-      memory: "200Mi"
+  resources: {}
+          #    requests:
+          #      cpu: "100m"
+          #      memory: "100Mi"
+          #    limits:
+          #      cpu: "1000m"
+          #      memory: "200Mi"
   tolerations: []
 
 deployment:
@@ -155,13 +155,13 @@ deployment:
   securityContext:
     runAsUser: 0
     privileged: false
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "100Mi"
-    limits:
-      cpu: "1000m"
-      memory: "200Mi"
+  resources: {}
+  #    requests:
+  #      cpu: "100m"
+  #      memory: "100Mi"
+  #    limits:
+  #      cpu: "1000m"
+  #      memory: "200Mi"
   tolerations: []
 
 # Replicas being used for the kube-state-metrics metricbeat deployment

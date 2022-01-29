@@ -1,29 +1,97 @@
 ---
-replicas: 1
+replicas: 4
 
 # Allows you to add any config files in /usr/share/logstash/config/
 # such as logstash.yml and log4j2.properties
 #
 # Note that when overriding logstash.yml, `http.host: 0.0.0.0` should always be included
 # to make default probes work.
-logstashConfig: {}
-#  logstash.yml: |
-#    key:
-#      nestedkey: value
-#  log4j2.properties: |
-#    key = value
+logstashConfig: 
+  logstash.yml: |
+    http.host: 0.0.0.0
+  pipelines.yml: |
+    - pipeline.id: ticker
+      path.config: "/usr/share/logstash/pipeline/ticker.conf"
+    - pipeline.id: position
+      path.config: "/usr/share/logstash/pipeline/position.conf"
+    - pipeline.id: trading
+      path.config: "/usr/share/logstash/pipeline/trading.conf"
+    - pipeline.id: signal-rsi
+      path.config: "/usr/share/logstash/pipeline/signal-rsi.conf"
+
 
 # Allows you to add any pipeline files in /usr/share/logstash/pipeline/
 ### ***warn*** there is a hardcoded logstash.conf in the image, override it first
-logstashPipeline: {}
-#  logstash.conf: |
-#    input {
-#      exec {
-#        command => "uptime"
-#        interval => 30
-#      }
-#    }
-#    output { stdout { } }
+logstashPipeline: 
+  ticker.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "kafka-headless.kafka.svc:9092"
+        topics => ["bithumb-ticker"]
+        group_id => "logstash"
+        consumer_threads => 6
+        codec => "json"
+      }
+    }
+    output { 
+      elasticsearch {
+        hosts => "http://elasticsearch-master-headless.elasticsearch.svc:9200"
+        index => "ticker-%{+YYYY-MM-dd}"
+        template_name => "kafka_mbeans"
+        } 
+      }
+  position.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "kafka-headless.kafka.svc:9092"
+        topics => ["order-position"]
+        group_id => "logstash"
+        consumer_threads => 2
+        codec => "json"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => "http://elasticsearch-master-headless.elasticsearch.svc:9200"
+        index => "position-%{+YYYY-MM-dd}"
+        template_name => "kafka_mbeans"
+        }
+      }
+  trading.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "kafka-headless.kafka.svc:9092"
+        topics => ["order-trading"]
+        group_id => "logstash"
+        consumer_threads => 2
+        codec => "json"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => "http://elasticsearch-master-headless.elasticsearch.svc:9200"
+        index => "trading-%{+YYYY-MM-dd}"
+        template_name => "kafka_mbeans"
+        }
+      }
+  signal-rsi.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "kafka-headless.kafka.svc:9092"
+        topics => ["signal-rsi"]
+        group_id => "logstash"
+        consumer_threads => 2
+        codec => "json"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => "http://elasticsearch-master-headless.elasticsearch.svc:9200"
+        index => "signal-%{+YYYY-MM-dd}"
+        template_name => "kafka_mbeans"
+        document_id => "%{coin}:%{datetime}"
+        }
+      }
 
 # Allows you to add any pattern files in your custom pattern dir
 logstashPatternDir: "/usr/share/logstash/patterns/"
